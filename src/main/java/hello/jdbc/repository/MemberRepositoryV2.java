@@ -9,15 +9,15 @@ import java.sql.*;
 import java.util.NoSuchElementException;
 
 /**
- *  JDBC - DataSource 사용, jdbcUtils 사용
+ *  JDBC - ConnectionParam
  */
 @Slf4j
-public class MemberRepositoryV1 {
+public class MemberRepositoryV2 {
 
     private final DataSource dataSource;
 
     // 생성자(의존관계 주입)
-    public MemberRepositoryV1(DataSource dataSource) {
+    public MemberRepositoryV2(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -78,6 +78,39 @@ public class MemberRepositoryV1 {
         }
     }
 
+    public Member findById(Connection con, String memberId) throws SQLException {
+        String sql = "select * from member where member_id = ?";
+
+//        Connection con = null; => 파라미터로 받은 connection을 써야 하기 때문에
+        PreparedStatement pstmt = null;
+        ResultSet rs = null; // db 반환값 담을 객체
+
+        try {
+//            con = getConnection(); => 파라미터로 받은 connection 써야됨
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, memberId);
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Member member = new Member();
+                member.setMemberId(rs.getString("member_id"));
+                member.setMoney(rs.getInt("money"));
+                return member;
+            } else {
+                throw new NoSuchElementException("member not found memberId = " + memberId); // errorException은 키값을 넣어주는것이 중요
+            }
+
+        } catch (SQLException e) {
+            log.error("db error", e);
+            throw e;
+        } finally {
+            // connection은 여기서 닫지 않는다 **
+            JdbcUtils.closeResultSet(rs);
+            JdbcUtils.closeStatement(pstmt);
+//            JdbcUtils.closeConnection(conn); => 여기에서 같은 connection을 사용하려고 하는데 connection을 닫으면 끝나기 때문
+        }
+    }
 
     // 수정
     public void update(String memberId, int money) throws SQLException {
@@ -98,6 +131,28 @@ public class MemberRepositoryV1 {
             throw e;
         } finally {
             close(con, pstmt, null);
+        }
+    }
+
+    public void update(Connection con, String memberId, int money) throws SQLException {
+        String sql = "update member set money=? where member_id=?";
+
+//        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+//            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, money);
+            pstmt.setString(2, memberId);
+            int resultSize = pstmt.executeUpdate();
+            log.info("resultSize = {}", resultSize);
+        } catch (SQLException e) {
+            log.error("db error", e);
+            throw e;
+        } finally {
+            JdbcUtils.closeStatement(pstmt);
+//            JdbcUtils.closeConnection(conn);
         }
     }
 

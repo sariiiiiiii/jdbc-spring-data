@@ -5,6 +5,7 @@ import hello.jdbc.domain.Member;
 import hello.jdbc.repository.MemberRepositoryV1;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,18 @@ class MemberServiceV1Test {
     private MemberRepositoryV1 memberRepository;
     private MemberServiceV1 memberService;
 
-    @BeforeEach
+    @BeforeEach // 메소드 실행전에 실행되는 어노테이션
     void before() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource(URL, USERNAME, PASSWORD);
         memberRepository = new MemberRepositoryV1(dataSource);
         memberService = new MemberServiceV1(memberRepository);
+    }
+
+    @AfterEach // 메소드 실행후에 실행되는 어노테이션
+    void after() throws SQLException {
+        memberRepository.delete(MEMBER_A);
+        memberRepository.delete(MEMBER_B);
+        memberRepository.delete(MEMBER_EX);
     }
 
     @Test
