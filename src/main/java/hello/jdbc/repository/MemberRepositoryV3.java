@@ -139,7 +139,7 @@ public class MemberRepositoryV3 {
     private Connection getConnection() throws SQLException {
         // 주의! 트랜잭션 동기화를 사용하려면 DataSourceUtils를 사용해야 한다
         // 트랜잭션 동기화 매니저가 관리하는 커넥션이 있으면 해당 커넥션을 반환한다
-        // 트랜잭션이 필요없는 경우 생성을 안한 상태에서 repository에서 접근하게 되면 트랜잭션동기화매니저에서 새로운 커넥션을 생성해서 반환한다
+        // 트랜잭션이 필요없는 경우 생성을 안한 상태에서 repository에서 접근하게 되면 트랜잭션동기화 매니저에서 새로운 커넥션을 생성해서 반환한다
         Connection con = DataSourceUtils.getConnection(dataSource);
         log.info("get connection={}. class={}", con, con.getClass());
          return con;

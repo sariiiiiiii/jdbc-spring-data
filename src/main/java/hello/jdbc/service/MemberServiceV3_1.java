@@ -68,20 +68,6 @@ public class MemberServiceV3_1 {
         
     }
 
-    private void release(Connection con) {
-        if (con != null) {
-            try {
-                // 커넥션은 사용 시 반납을 하는데 setAutoCommit을 false인 상태로 반납을 하게 되면
-                // 누군가가 커넥션을 사용할 때 setAutoCommit(false)인 상태로 커넥션을 받기 때문에 true로 바꿔주자
-                con.setAutoCommit(true); // 커넥션 풀 고려
-                con.close();
-            } catch (Exception e) {
-                // error를 log로 남길때는 = {}을 사용하지 않는다
-                log.info("error", e);
-            }
-        }
-    }
-
     private void validation(Member member) {
         if (member.getMemberId().equals("ex")) {
             throw new IllegalStateException("이체중 예외 발생");
