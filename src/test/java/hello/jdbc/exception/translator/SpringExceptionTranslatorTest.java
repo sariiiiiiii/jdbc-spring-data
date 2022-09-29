@@ -40,7 +40,7 @@ public class SpringExceptionTranslatorTest {
     /**
      * 그럼 스프링에서는 어떻게 DB마다 다른 Errorcode를 인식해서 각각의 맞는 Exception을 반환해줄까?
      * org.springframework.jdbc.support.sql-error-codes.xml
-     * 스프링 SQL 예외 변환기는 SQL ErrorCOde를 이 파일에 대입해서 어떤 스프링 데이터 접근 예외로 전환해야 할지 찾아낸다
+     * 스프링 SQL 예외 변환기는 SQL ErrorCode를 이 파일에 대입해서 어떤 스프링 데이터 접근 예외로 전환해야 할지 찾아낸다
      * 예를 들어서 H2 데이터베이스에서 "42000"이 발생하면 badSqlGrammerCodes이기 때문에 BadSqlGrammarException을 반환한다
      * IntelliJ -> double shift -> sql-error-codes.xml 검색하면 나옴
      */
